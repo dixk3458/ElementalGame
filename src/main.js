@@ -18,8 +18,14 @@ const popUp = document.querySelector('.pop-up');
 const popUpText = document.querySelector('.pop-up__message');
 const popUpRefresh = document.querySelector('.pop-up__refresh');
 
+const branchSound = new Audio('./sound/branch_pull.mp3');
+const waterSound = new Audio('./sound/water_pull.mp3');
+const alertSound = new Audio('./sound/alert.wav');
+const backgroundSound = new Audio('./sound/bg.mp3');
+const winSound = new Audio('./sound/game_win.mp3');
+
 let started = false;
-let score = BRANCH_COUNT;
+let score = 0;
 let timer = undefined;
 
 gameBtn.addEventListener('click', () => {
@@ -28,14 +34,22 @@ gameBtn.addEventListener('click', () => {
   } else {
     startGame();
   }
-  started = !started;
+});
+
+field.addEventListener('click', onFieldClick);
+
+popUpRefresh.addEventListener('click', () => {
+  startGame();
+  hidePopUp();
 });
 
 function startGame() {
+  started = true;
   showStopButton();
   initGame();
   showTimerAndScore();
   startGameTimer();
+  playSound(backgroundSound);
 }
 
 function startGameTimer() {
@@ -44,6 +58,7 @@ function startGameTimer() {
   timer = setInterval(() => {
     if (remainingTimeSec <= 0) {
       clearInterval(timer);
+      finishGame(score === BRANCH_COUNT);
       return;
     }
     updateTimerText(--remainingTimeSec);
@@ -66,15 +81,31 @@ function showTimerAndScore() {
 }
 
 function showStopButton() {
-  const icon = gameBtn.querySelector('.fa-play');
+  const icon = gameBtn.querySelector('.fa-solid');
   icon.classList.remove('fa-play');
   icon.classList.add('fa-stop');
 }
 
 function stopGame() {
+  started = false;
   stopGameTimer();
   hideGameButton();
   showPopUpWithText('REPLAY❓');
+  playSound(alertSound);
+  stopSound(backgroundSound);
+}
+
+function finishGame(win) {
+  started = false;
+  hideGameButton();
+  if (win) {
+    playSound(winSound);
+  } else {
+    playSound(waterSound);
+  }
+  stopGameTimer();
+  stopSound(backgroundSound);
+  showPopUpWithText(win ? 'YOU WIN 🎉' : 'YOU LOST 😜');
 }
 
 function stopGameTimer() {
@@ -86,11 +117,47 @@ function showPopUpWithText(text) {
   popUp.classList.remove('pop-up--hide');
 }
 
+function hidePopUp() {
+  popUp.classList.add('pop-up--hide');
+}
+
 function initGame() {
+  score = 0;
   field.innerText = '';
   gameScore.innerText = BRANCH_COUNT;
   addItem('water', WATER_COUNT, './images/water.png');
   addItem('branch', BRANCH_COUNT, './images/branch.png');
+}
+
+function onFieldClick(event) {
+  if (!started) {
+    return;
+  }
+  const target = event.target;
+  if (target.matches('.branch')) {
+    target.remove();
+    score++;
+    playSound(branchSound);
+    updateScoreBoard(score);
+    if (score === BRANCH_COUNT) {
+      finishGame(true);
+    }
+  } else if (target.matches('.water')) {
+    finishGame(false);
+  }
+}
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
+}
+
+function updateScoreBoard(score) {
+  gameScore.innerText = BRANCH_COUNT - score;
 }
 
 function addItem(className, count, imgPath) {
