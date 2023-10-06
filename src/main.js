@@ -2,12 +2,54 @@
 
 const ITEM_SIZE = 80;
 
+const WATER_COUNT = 5;
+const BRANCH_COUNT = 5;
+
 const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
 
+const gameBtn = document.querySelector('.game__button');
+const gameTimer = document.querySelector('.game__timer');
+const gameScore = document.querySelector('.game__score');
+
+let started = false;
+let score = BRANCH_COUNT;
+let time = undefined;
+
+gameBtn.addEventListener('click', () => {
+  if (started) {
+    stopGame();
+  } else {
+    startGame();
+  }
+  started = !started;
+});
+
+function startGame() {
+  showStopButton();
+  initGame();
+  showTimerAndScore();
+  startGameTimer();
+}
+
+function showTimerAndScore() {
+  gameScore.style.visibility = 'visible';
+  gameTimer.style.visibility = 'visible';
+}
+
+function showStopButton() {
+  const icon = gameBtn.querySelector('.fa-play');
+  icon.classList.remove('fa-play');
+  icon.classList.add('fa-stop');
+}
+
+function stopGame() {}
+
 function initGame() {
-  addItem('water', 5, './images/water.png');
-  addItem('branch', 5, './images/branch.png');
+  field.innerText = '';
+  gameScore.innerText = BRANCH_COUNT;
+  addItem('water', WATER_COUNT, './images/water.png');
+  addItem('branch', BRANCH_COUNT, './images/branch.png');
 }
 
 function addItem(className, count, imgPath) {
@@ -31,5 +73,3 @@ function addItem(className, count, imgPath) {
 function randomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
-
-initGame();
