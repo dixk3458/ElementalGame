@@ -14,6 +14,10 @@ const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 
+const popUp = document.querySelector('.pop-up');
+const popUpText = document.querySelector('.pop-up__message');
+const popUpRefresh = document.querySelector('.pop-up__refresh');
+
 let started = false;
 let score = BRANCH_COUNT;
 let timer = undefined;
@@ -52,6 +56,10 @@ function updateTimerText(time) {
   gameTimer.innerText = `${minutes}:${seconds}`;
 }
 
+function hideGameButton() {
+  gameBtn.style.visibility = ' hidden';
+}
+
 function showTimerAndScore() {
   gameScore.style.visibility = 'visible';
   gameTimer.style.visibility = 'visible';
@@ -63,7 +71,20 @@ function showStopButton() {
   icon.classList.add('fa-stop');
 }
 
-function stopGame() {}
+function stopGame() {
+  stopGameTimer();
+  hideGameButton();
+  showPopUpWithText('REPLAY❓');
+}
+
+function stopGameTimer() {
+  clearInterval(timer);
+}
+
+function showPopUpWithText(text) {
+  popUpText.innerText = text;
+  popUp.classList.remove('pop-up--hide');
+}
 
 function initGame() {
   field.innerText = '';
