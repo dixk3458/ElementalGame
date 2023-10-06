@@ -14,6 +14,8 @@ const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 
+const guide = document.querySelector('.guide');
+
 const popUp = document.querySelector('.pop-up');
 const popUpText = document.querySelector('.pop-up__message');
 const popUpRefresh = document.querySelector('.pop-up__refresh');
@@ -46,6 +48,7 @@ popUpRefresh.addEventListener('click', () => {
 function startGame() {
   started = true;
   showStopButton();
+  hideGuide();
   initGame();
   showTimerAndScore();
   startGameTimer();
@@ -84,6 +87,7 @@ function showStopButton() {
   const icon = gameBtn.querySelector('.fa-solid');
   icon.classList.remove('fa-play');
   icon.classList.add('fa-stop');
+  gameBtn.style.visibility = 'visible';
 }
 
 function stopGame() {
@@ -176,6 +180,10 @@ function addItem(className, count, imgPath) {
     item.style.top = `${y}px`;
     field.appendChild(item);
   }
+}
+
+function hideGuide() {
+  guide.classList.add('guide--hide');
 }
 
 function randomNumber(min, max) {
