@@ -29,6 +29,7 @@ button {
   background: center/cover url(../images/background.png);
   margin: auto;
   border-radius: 20px;
+  overflow: hidden;
 }
 
 .game__header {
@@ -74,10 +75,12 @@ button {
 }
 
 .game__field {
+  position: relative;
   width: 100%;
   height: 100%;
   margin-top: 40px;
-  background-color: RGB(187, 187, 187, 0.75);
+  /* background-color: RGB(187, 187, 187, 0.75); */
+  background-color: RGB(242, 188, 108, 0.75);
 }
 
 .pop-up {
