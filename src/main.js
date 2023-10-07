@@ -1,5 +1,7 @@
 'use strict';
 
+import PopUp from './popup.js';
+
 const ITEM_SIZE = 80;
 
 const WATER_COUNT = 5;
@@ -16,10 +18,6 @@ const gameScore = document.querySelector('.game__score');
 
 const guide = document.querySelector('.guide');
 
-const popUp = document.querySelector('.pop-up');
-const popUpText = document.querySelector('.pop-up__message');
-const popUpRefresh = document.querySelector('.pop-up__refresh');
-
 const branchSound = new Audio('./sound/branch_pull.mp3');
 const waterSound = new Audio('./sound/water_pull.mp3');
 const alertSound = new Audio('./sound/alert.wav');
@@ -30,6 +28,11 @@ let started = false;
 let score = 0;
 let timer = undefined;
 
+const gameFinishBanner = new PopUp();
+gameFinishBanner.setClickListener(() => {
+  startGame();
+});
+
 gameBtn.addEventListener('click', () => {
   if (started) {
     stopGame();
@@ -39,11 +42,6 @@ gameBtn.addEventListener('click', () => {
 });
 
 field.addEventListener('click', onFieldClick);
-
-popUpRefresh.addEventListener('click', () => {
-  startGame();
-  hidePopUp();
-});
 
 function startGame() {
   started = true;
@@ -94,7 +92,7 @@ function stopGame() {
   started = false;
   stopGameTimer();
   hideGameButton();
-  showPopUpWithText('REPLAY❓');
+  gameFinishBanner.showWithText('REPLAY ❓');
   playSound(alertSound);
   stopSound(backgroundSound);
 }
@@ -109,20 +107,11 @@ function finishGame(win) {
   }
   stopGameTimer();
   stopSound(backgroundSound);
-  showPopUpWithText(win ? 'YOU WIN 🎉' : 'YOU LOST 😜');
+  gameFinishBanner.showWithText(win ? 'YOU WIN 🎉' : 'YOU LOST 😜');
 }
 
 function stopGameTimer() {
   clearInterval(timer);
-}
-
-function showPopUpWithText(text) {
-  popUpText.innerText = text;
-  popUp.classList.remove('pop-up--hide');
-}
-
-function hidePopUp() {
-  popUp.classList.add('pop-up--hide');
 }
 
 function initGame() {
