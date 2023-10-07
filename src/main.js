@@ -1,16 +1,12 @@
 'use strict';
 
 import PopUp from './popup.js';
-
-const ITEM_SIZE = 80;
+import Field from './field.js';
 
 const WATER_COUNT = 5;
 const BRANCH_COUNT = 5;
 
 const GAME_DURATION_SEC = 5;
-
-const field = document.querySelector('.game__field');
-const fieldRect = field.getBoundingClientRect();
 
 const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
@@ -29,6 +25,24 @@ let score = 0;
 let timer = undefined;
 
 const gameFinishBanner = new PopUp();
+const gameField = new Field(BRANCH_COUNT, WATER_COUNT);
+gameField.setClickListener(onItemClick);
+
+function onItemClick(item) {
+  if (!started) {
+    return;
+  }
+  if (item === 'branch') {
+    score++;
+    updateScoreBoard(score);
+    if (score === BRANCH_COUNT) {
+      finishGame(true);
+    }
+  } else if (item === 'water') {
+    finishGame(false);
+  }
+}
+
 gameFinishBanner.setClickListener(() => {
   startGame();
 });
@@ -40,8 +54,6 @@ gameBtn.addEventListener('click', () => {
     startGame();
   }
 });
-
-field.addEventListener('click', onFieldClick);
 
 function startGame() {
   started = true;
@@ -116,28 +128,8 @@ function stopGameTimer() {
 
 function initGame() {
   score = 0;
-  field.innerText = '';
   gameScore.innerText = BRANCH_COUNT;
-  addItem('water', WATER_COUNT, './images/water.png');
-  addItem('branch', BRANCH_COUNT, './images/branch.png');
-}
-
-function onFieldClick(event) {
-  if (!started) {
-    return;
-  }
-  const target = event.target;
-  if (target.matches('.branch')) {
-    target.remove();
-    score++;
-    playSound(branchSound);
-    updateScoreBoard(score);
-    if (score === BRANCH_COUNT) {
-      finishGame(true);
-    }
-  } else if (target.matches('.water')) {
-    finishGame(false);
-  }
+  gameField.init();
 }
 
 function playSound(sound) {
@@ -153,28 +145,6 @@ function updateScoreBoard(score) {
   gameScore.innerText = BRANCH_COUNT - score;
 }
 
-function addItem(className, count, imgPath) {
-  const x1 = 0;
-  const y1 = 0;
-  const x2 = fieldRect.width - ITEM_SIZE;
-  const y2 = fieldRect.height - ITEM_SIZE;
-  for (let i = 0; i < count; i++) {
-    const item = document.createElement('img');
-    item.setAttribute('class', className);
-    item.setAttribute('src', imgPath);
-    item.style.position = 'absolute';
-    const x = randomNumber(x1, x2);
-    const y = randomNumber(y1, y2);
-    item.style.left = `${x}px`;
-    item.style.top = `${y}px`;
-    field.appendChild(item);
-  }
-}
-
 function hideGuide() {
   guide.classList.add('guide--hide');
-}
-
-function randomNumber(min, max) {
-  return Math.random() * (max - min) + min;
 }
