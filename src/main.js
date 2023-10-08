@@ -2,6 +2,7 @@
 
 import PopUp from './popup.js';
 import Field from './field.js';
+import * as sound from './sound.js';
 
 const WATER_COUNT = 5;
 const BRANCH_COUNT = 5;
@@ -13,12 +14,6 @@ const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
 
 const guide = document.querySelector('.guide');
-
-const branchSound = new Audio('./sound/branch_pull.mp3');
-const waterSound = new Audio('./sound/water_pull.mp3');
-const alertSound = new Audio('./sound/alert.wav');
-const backgroundSound = new Audio('./sound/bg.mp3');
-const winSound = new Audio('./sound/game_win.mp3');
 
 let started = false;
 let score = 0;
@@ -62,7 +57,7 @@ function startGame() {
   initGame();
   showTimerAndScore();
   startGameTimer();
-  playSound(backgroundSound);
+  sound.playBackground();
 }
 
 function startGameTimer() {
@@ -105,20 +100,20 @@ function stopGame() {
   stopGameTimer();
   hideGameButton();
   gameFinishBanner.showWithText('REPLAY ❓');
-  playSound(alertSound);
-  stopSound(backgroundSound);
+  sound.playAlert();
+  sound.stopBackground();
 }
 
 function finishGame(win) {
   started = false;
   hideGameButton();
   if (win) {
-    playSound(winSound);
+    sound.playWin();
   } else {
-    playSound(waterSound);
+    sound.playWater();
   }
   stopGameTimer();
-  stopSound(backgroundSound);
+  sound.stopBackground();
   gameFinishBanner.showWithText(win ? 'YOU WIN 🎉' : 'YOU LOST 😜');
 }
 
@@ -130,15 +125,6 @@ function initGame() {
   score = 0;
   gameScore.innerText = BRANCH_COUNT;
   gameField.init();
-}
-
-function playSound(sound) {
-  sound.currentTime = 0;
-  sound.play();
-}
-
-function stopSound(sound) {
-  sound.pause();
 }
 
 function updateScoreBoard(score) {
