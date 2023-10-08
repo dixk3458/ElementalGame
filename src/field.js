@@ -41,7 +41,7 @@ export default class Field {
     }
   }
 
-  onClick(event) {
+  onClick = event => {
     const target = event.target;
     if (target.matches('.branch')) {
       target.remove();
@@ -50,7 +50,7 @@ export default class Field {
     } else if (target.matches('.water')) {
       this.onItemClick && this.onItemClick('water');
     }
-  }
+  };
 }
 
 function playSound(sound) {
