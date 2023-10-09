@@ -2,8 +2,12 @@
 
 const branchSound = new Audio('./sound/branch_pull.mp3');
 const ITEM_SIZE = 80;
+export const ItemType = Object.freeze({
+  branch: 'branch',
+  water: 'water',
+});
 
-export default class Field {
+export class Field {
   constructor(branchCount, waterCount) {
     this.branchCount = branchCount;
     this.waterCount = waterCount;
@@ -46,9 +50,9 @@ export default class Field {
     if (target.matches('.branch')) {
       target.remove();
       playSound(branchSound);
-      this.onItemClick && this.onItemClick('branch');
+      this.onItemClick && this.onItemClick(ItemType.branch);
     } else if (target.matches('.water')) {
-      this.onItemClick && this.onItemClick('water');
+      this.onItemClick && this.onItemClick(ItemType.water);
     }
   };
 }
