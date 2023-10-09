@@ -3,7 +3,32 @@
 import Field from './field.js';
 import * as sound from './sound.js';
 
-export default class Game {
+export default class GameBuilder {
+  withGameDuration(duration) {
+    this.gameDuration = duration;
+    return this;
+  }
+
+  withBranchCount(num) {
+    this.branchCount = num;
+    return this;
+  }
+
+  withWaterCount(num) {
+    this.waterCount = num;
+    return this;
+  }
+
+  build() {
+    return new Game(
+      this.gameDuration, //
+      this.branchCount, //
+      this.waterCount
+    );
+  }
+}
+
+class Game {
   constructor(gameDuration, branchCount, waterCount) {
     this.GAME_DURATION_SEC = gameDuration;
     this.BRANCH_COUNT = branchCount;
