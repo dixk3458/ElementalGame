@@ -122,8 +122,8 @@ class Game {
     this.updateTimerText(remainingTimeSec);
     this.timer = setInterval(() => {
       if (remainingTimeSec <= 0) {
-        clearInterval(timer);
-        this.stop(score === this.BRANCH_COUNT ? Reason.win : Reason.lose);
+        clearInterval(this.timer);
+        this.stop(this.score === this.BRANCH_COUNT ? Reason.win : Reason.lose);
         return;
       }
       this.updateTimerText(--remainingTimeSec);
