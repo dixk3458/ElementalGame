@@ -14,7 +14,7 @@ export class Field {
 
     this.field.addEventListener('click', this.onClick);
 
-    this.interval = undefined;
+    this.intervals = [];
   }
 
   setSetting(branchCount, waterCount, round) {
@@ -50,7 +50,22 @@ export class Field {
       item.style.left = `${x}px`;
       item.style.top = `${y}px`;
       this.field.appendChild(item);
+
+      const intervalId = setInterval(() => {
+        const newX = randomNumber(x1, x2);
+        const newY = randomNumber(y1, y2);
+
+        item.style.left = `${newX}px`;
+        item.style.top = `${newY}px`;
+      }, 1000);
+      this.intervals.push(intervalId);
     }
+  }
+
+  stopInterval() {
+    this.intervals.forEach(intervalId => {
+      clearInterval(intervalId);
+    });
   }
 
   onClick = event => {
@@ -58,6 +73,7 @@ export class Field {
     if (target.matches('.branch')) {
       target.remove();
       playSound(branchSound);
+
       this.onItemClick && this.onItemClick(ItemType.branch);
     } else if (target.matches('.water')) {
       this.onItemClick && this.onItemClick(ItemType.water);
