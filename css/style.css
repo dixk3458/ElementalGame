@@ -153,7 +153,7 @@ button {
 
 .water,
 .branch {
-  transition: transform 100ms ease-in;
+  transition: all 100ms ease-in;
 }
 
 .water:hover,

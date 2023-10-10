@@ -9,12 +9,19 @@ export const ItemType = Object.freeze({
 
 export class Field {
   constructor(branchCount, waterCount) {
-    this.branchCount = branchCount;
-    this.waterCount = waterCount;
-
     this.field = document.querySelector('.game__field');
     this.fieldRect = this.field.getBoundingClientRect();
+
     this.field.addEventListener('click', this.onClick);
+
+    this.interval = undefined;
+  }
+
+  setSetting(branchCount, waterCount, round) {
+    this.branchCount = branchCount;
+    this.waterCount = waterCount;
+    if (round > 2) {
+    }
   }
 
   setClickListener(onItemClick) {
@@ -32,6 +39,7 @@ export class Field {
     const y1 = 0;
     const x2 = this.fieldRect.width - ITEM_SIZE;
     const y2 = this.fieldRect.height - ITEM_SIZE;
+
     for (let i = 0; i < count; i++) {
       const item = document.createElement('img');
       item.setAttribute('class', className);

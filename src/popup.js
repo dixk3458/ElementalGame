@@ -15,7 +15,15 @@ export default class PopUp {
     this.onClick = onClick;
   }
 
-  showWithText(text) {
+  showWithText(reason, text) {
+    const icon = this.popUp.querySelector('.fa-solid');
+    if (reason === 'win') {
+      icon.classList.remove('fa-arrow-rotate-right');
+      icon.classList.add('fa-play');
+    } else {
+      icon.classList.remove('fa-play');
+      icon.classList.add('fa-arrow-rotate-right');
+    }
     this.popUpText.innerText = text;
     this.popUp.classList.remove('pop-up--hide');
   }

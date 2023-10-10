@@ -5,9 +5,9 @@ import PopUp from './popup.js';
 import * as sound from './sound.js';
 
 const game = new GameBuilder()
-  .withGameDuration(10)
-  .withBranchCount(10)
-  .withWaterCount(20)
+  .withGameDuration(5)
+  .withBranchCount(3)
+  .withWaterCount(5)
   .build();
 
 const gameFinishBanner = new PopUp();
@@ -31,9 +31,10 @@ game.setGameStopListener(reason => {
       throw new Error('not valid reason');
   }
 
-  gameFinishBanner.showWithText(message);
+  gameFinishBanner.showWithText(reason, message);
 });
 
 gameFinishBanner.setClickListener(() => {
   game.start();
+  game.startReason = 'init';
 });

@@ -36,13 +36,19 @@ export class GameBuilder {
 
 class Game {
   constructor(gameDuration, branchCount, waterCount) {
+    this.initialSetting = [gameDuration, branchCount, waterCount];
+
     this.GAME_DURATION_SEC = gameDuration;
     this.BRANCH_COUNT = branchCount;
     this.WATER_COUNT = waterCount;
+    this.gameField = new Field();
 
     this.started = false;
     this.score = 0;
     this.timer = undefined;
+    this.round = 1;
+
+    this.startReason = 'init';
 
     this.gameTimer = document.querySelector('.game__timer');
     this.gameScore = document.querySelector('.game__score');
@@ -56,24 +62,23 @@ class Game {
         this.start();
       }
     });
-
-    this.gameField = new Field(this.BRANCH_COUNT, this.WATER_COUNT);
-    this.gameField.setClickListener(this.onItemClick);
   }
 
   onItemClick = item => {
     if (!this.started) {
       return;
     }
-    console.log(item);
     if (item === ItemType.branch) {
       this.score++;
       this.updateScoreBoard(this.score);
       if (this.score === this.BRANCH_COUNT) {
         this.stop(Reason.win);
+        this.startReason = 'win';
       }
     } else if (item === ItemType.water) {
       this.stop(Reason.lose);
+      this.startReason = 'lose';
+      this.round = 1;
     }
   };
 
@@ -85,7 +90,7 @@ class Game {
     this.started = true;
     this.showStopButton();
     this.hideGuide();
-    this.initGame();
+    this.initGame(this.startReason);
     this.showTimerAndScore();
     this.startGameTimer();
     sound.playBackground();
@@ -99,10 +104,30 @@ class Game {
     this.onGameStop && this.onGameStop(reason);
   }
 
-  initGame() {
+  initGame(reason) {
     this.score = 0;
+    this.updateGameSetting(reason);
     this.gameScore.innerText = this.BRANCH_COUNT;
+    this.gameField.setSetting(this.BRANCH_COUNT, this.WATER_COUNT, this.round);
+    this.gameField.setClickListener(this.onItemClick);
     this.gameField.init();
+  }
+
+  updateGameSetting(startReason) {
+    switch (startReason) {
+      case 'win':
+        this.GAME_DURATION_SEC = this.GAME_DURATION_SEC + 1;
+        this.BRANCH_COUNT = this.BRANCH_COUNT + 5;
+        this.WATER_COUNT = this.WATER_COUNT + 7;
+        break;
+      case 'lose':
+      case 'init':
+        [this.GAME_DURATION_SEC, this.BRANCH_COUNT, this.WATER_COUNT] =
+          this.initialSetting;
+        break;
+      default:
+        throw new Error('not valid reason');
+    }
   }
 
   showStopButton() {
